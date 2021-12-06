@@ -3,6 +3,6 @@ namespace MantisAP\Exceptions;
 
 use MantisAP\MantisAPException;
 
-class UnableToSaveObjectException extends MantisAPException {
+class ObjectNotFoundException extends MantisAPException {
 
 }

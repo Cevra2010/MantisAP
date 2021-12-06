@@ -2,6 +2,7 @@
 namespace MantisAP;
 
 use Exception;
+use MantisAP\Exceptions\ObjectNotFoundException;
 use MantisAP\Exceptions\UnableToSaveObjectException;
 
 /**
@@ -50,7 +51,12 @@ abstract class MantisObject {
     {
         $calledClass = get_called_class();
         $mantisObject = new $calledClass();
-        return $mantisObject->findById($id);
+        try {
+            return $mantisObject->findById($id);
+        }
+        catch(ObjectNotFoundException $objectNotFoundException) {
+            $objectNotFoundException->exit();
+        }
     }
 
     /**
@@ -120,7 +126,7 @@ abstract class MantisObject {
 
         $responseArray = (array)json_decode($jsonResponse);
         if(array_key_exists("code",$responseArray)) {
-            throw new Exception("Error ".$responseArray["code"].": ".$responseArray['message']);
+            throw new ObjectNotFoundException("Error ".$responseArray["code"].": ".$responseArray['message']);
         }
 
 
@@ -173,7 +179,7 @@ abstract class MantisObject {
 
         if($this->stored)
         {
-            // Objekt ist bereits in der Mantis-API vorhaden.
+            // Objekt ist bereits in der Mantis-API vorhanden.
 
             $mantisRequest = new MantisRequest();
             $mantisRequest->setObjectName($this->objectName)->setMethodPatch();
@@ -190,7 +196,7 @@ abstract class MantisObject {
         }
         else
         {
-            // Objekt ist noch nicht vorhaden und muss erstellt werden
+            // Objekt ist noch nicht vorhanden und muss erstellt werden
 
             $mantisRequest = new MantisRequest();
             $mantisRequest->setObjectName($this->objectName)->setMethodPost();

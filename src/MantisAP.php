@@ -9,7 +9,7 @@ class MantisAP {
     /**
      * @var MantisAP Die per statische Methode instanziierte MantisAP Instanz.
      */
-    public static $instace;
+    public static $instance;
 
     /**
      * @var string Die URL zur Mantis REST-Api
@@ -29,7 +29,7 @@ class MantisAP {
      */
     public function __construct(string $url, string $token)
     {
-        self::$instace = $this;
+        self::$instance = $this;
         $this->url = $url;
         $this->token = $token;
         return $this;
@@ -38,7 +38,7 @@ class MantisAP {
     /**
      * @return string Gibt den Token zurück.
      */
-    public function getToken()
+    public function getToken() : string
     {
         return $this->token;
     }
@@ -46,7 +46,7 @@ class MantisAP {
     /**
      * @return string Gibt die URL zurück.
      */
-    public function getUrl()
+    public function getUrl() : string
     {
         return $this->url;
     }
@@ -54,8 +54,8 @@ class MantisAP {
     /**
      * @return MantisAP Gibt die MantisAP Instanz zurück.
      */
-    public static function getInstace()
+    public static function getInstance() : MantisAP
     {
-        return self::$instace;
+        return self::$instance;
     }
 }

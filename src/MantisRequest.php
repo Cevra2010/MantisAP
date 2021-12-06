@@ -2,8 +2,8 @@
 namespace MantisAP;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Client\ClientExceptionInterface;
 
 /**
  *
@@ -52,7 +52,7 @@ class MantisRequest {
      */
     public function __construct()
     {
-        $this->mantisAPInstance = MantisAP::getInstace();
+        $this->mantisAPInstance = MantisAP::getInstance();
         return $this;
     }
 
@@ -136,7 +136,12 @@ class MantisRequest {
                 $request = new Request($this->method, $this->getRequestUrl(), $this->getHeaders());
             }
 
-            $response = $client->sendRequest($request);
+            try {
+                $response = $client->sendRequest($request);
+            }
+            catch (ClientExceptionInterface $e) {
+                die("MantisAP - HTTP-Client error: ".$e->getMessage());
+            }
 
             switch ($this->method) {
                 case "POST":
@@ -165,10 +170,6 @@ class MantisRequest {
             }
             return false;
         }
-        catch(GuzzleException $guzzleException) {
-
-        }
-        return false;
     }
 
     /**
