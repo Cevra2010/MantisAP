@@ -6,7 +6,7 @@ ini_set('display_errors', '1');
 
 use MantisAP\MantisAP;
 
-$mantisAP = new MantisAP('http://mantis.ff-dotzheim.de','9x8JgEI1xwnFlnrA9P6F8dvLMDKfNtKV');
+$mantisAP = new MantisAP('http://mantis.ff-dotzheim.de','xUJhx16f368z4h1n7yC2NBCMMefECZiF');
 
 $issues = \MantisAP\Objects\MantisIssue::find(6);
 $issues->delete();
