@@ -3,11 +3,10 @@ namespace MantisAP;
 
 use Exception;
 use MantisAP\Exceptions\UnableToSaveObjectException;
-use MantisAP\Interfaces\MantisObjectInterface;
 
 /**
  *  MantisObjects ist die abstrakte Elternklasse einer jeden Mantis Objektes.
- *  Diese Klasse deligiert die jeweiligen Abfragen an die Klasse MantisRequest für das Request an die Mantis REST-Api
+ *  Diese Klasse delegiert die jeweiligen Abfragen an die Klasse MantisRequest für das Request an die Mantis REST-Api
  */
 abstract class MantisObject {
 
@@ -22,7 +21,7 @@ abstract class MantisObject {
     protected $fields = [];
 
     /**
-     * @var array Benötigte Felder zum speichern
+     * @var array Benötigte Felder zum Speichern
      */
     protected $required = [];
 
@@ -47,7 +46,8 @@ abstract class MantisObject {
      * @param integer $id
      * @return $this
      */
-    public static function find($id) {
+    public static function find(int $id)
+    {
         $calledClass = get_called_class();
         $mantisObject = new $calledClass();
         return $mantisObject->findById($id);
@@ -66,7 +66,7 @@ abstract class MantisObject {
     }
 
     /**
-     * Setzt einen Parameter. Ist der Parameter im readonly-array vorhaden, wird eine Exception geworfen.
+     * Setzt einen Parameter. Ist der Parameter im readonly-array vorhanden, wird eine Exception geworfen.
      *
      * @param string $name
      * @param mixed $value
@@ -91,7 +91,7 @@ abstract class MantisObject {
      *
      * @return bool
      */
-    public function isDirty()
+    public function isDirty() : bool
     {
         return $this->dirty;
     }
@@ -103,15 +103,16 @@ abstract class MantisObject {
      *
      * @param integer $objectId
      * @return $this|null
+     * @throws Exception
      */
-    protected function findById($objectId) {
+    protected function findById(int $objectId) {
 
         // Mantis REST-Api request erzeugen und ausführen
         $request = new MantisRequest();
         $request->setMethodGet()->setObjectName($this->objectName)->setObjectId($objectId);
         $jsonResponse = $request->getResponse();
 
-        // Prüfen ob die Antwort leer / null ist.
+        // Prüfen, ob die Antwort leer / null ist.
         if(!$jsonResponse)
         {
             return null;
@@ -129,7 +130,7 @@ abstract class MantisObject {
 
         $this->setParameters($object);
 
-        // Instanzzustand setzen
+        // Instanz zustand setzen
         $this->dirty = false;
         $this->stored = true;
 
@@ -156,10 +157,12 @@ abstract class MantisObject {
 
     /**
      *  Ist das Objekt bereits gespeichert, wird ein Patch-Request ausgeführt.
-     *  Ist das Obejekt noch nicht gespeichert wird Post-Request ausgeführt und das Objekt im Anschluss neu instanziert,
+     *  Ist das Objekt noch nicht gespeichert wird Post-Request ausgeführt und das Objekt im Anschluss neu instanziieren,
      *  da nun eine id für das Objekt verfügbar ist.
      *
      * @return $this
+     * @noinspection PhpIfWithCommonPartsInspection
+     * @throws UnableToSaveObjectException
      */
     public function save() {
         foreach($this->required as $required) {
@@ -170,6 +173,8 @@ abstract class MantisObject {
 
         if($this->stored)
         {
+            // Objekt ist bereits in der Mantis-API vorhaden.
+
             $mantisRequest = new MantisRequest();
             $mantisRequest->setObjectName($this->objectName)->setMethodPatch();
             $mantisRequest->setData($this->fields);
@@ -185,6 +190,8 @@ abstract class MantisObject {
         }
         else
         {
+            // Objekt ist noch nicht vorhaden und muss erstellt werden
+
             $mantisRequest = new MantisRequest();
             $mantisRequest->setObjectName($this->objectName)->setMethodPost();
             $mantisRequest->setData($this->fields);
@@ -206,6 +213,11 @@ abstract class MantisObject {
         return $this;
     }
 
+    /**
+     * Gibt ein array mit allen verfügbaren Objekten als jeweilige Objektinstanz zurück.
+     *
+     * @return array|false|null
+     */
     protected function getAll() {
         $calledClass = get_called_class();
         $mantisRequest = new MantisRequest();
@@ -233,10 +245,20 @@ abstract class MantisObject {
         return false;
     }
 
+    /**
+     * Füllt die Parameter nach einem REST-Api Request
+     *
+     * @param $apiObject
+     */
     protected function fillByApi($apiObject) {
         $this->setParameters((array)$apiObject);
     }
 
+    /**
+     * Löscht ein Objekt
+     *
+     * @return bool
+     */
     public function delete() {
         $mantisRequest = new MantisRequest();
         $mantisRequest->setMethodDelete()->setObjectName($this->objectName);
@@ -249,6 +271,12 @@ abstract class MantisObject {
 
     }
 
+    /**
+     * Instanziiert das jeweilige Objekt und führt in diesem Objekt die getAll() Methode aus.
+     * Als Rückgabe wird das Ergebnis der getAll Methode zurückgegeben.
+     *
+     * @return mixed
+     */
     public static function all() {
         $calledClass = get_called_class();
         $mantisObject = new $calledClass();

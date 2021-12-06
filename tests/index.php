@@ -5,10 +5,11 @@ ini_set('display_errors', '1');
 
 
 use MantisAP\MantisAP;
+use MantisAP\Objects\MantisIssue;
 
 $mantisAP = new MantisAP('URL','TOKEN');
 
-$issues = \MantisAP\Objects\MantisIssue::find(6);
+$issues = MantisIssue::find(6);
 $issues->delete();
 
 var_dump($issues);

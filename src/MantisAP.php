@@ -1,14 +1,32 @@
 <?php
 namespace MantisAP;
-use MantisAP\Objects\MantisProject;
 
+/**
+ *
+ */
 class MantisAP {
 
+    /**
+     * @var MantisAP Die per statische Methode instanziierte MantisAP Instanz.
+     */
     public static $instace;
 
+    /**
+     * @var string Die URL zur Mantis REST-Api
+     */
     protected $url;
+
+    /**
+     * @var string Mantis Benutzer-Token
+     */
     protected $token;
 
+    /**
+     * Setzten die URL der MantisBT-Instanz und den dazugehörigen Token.
+     *
+     * @param string $url
+     * @param string $token
+     */
     public function __construct(string $url, string $token)
     {
         self::$instace = $this;
@@ -17,12 +35,8 @@ class MantisAP {
         return $this;
     }
 
-    public function project() {
-        return new MantisProject();
-    }
-
     /**
-     * @return string
+     * @return string Gibt den Token zurück.
      */
     public function getToken()
     {
@@ -30,7 +44,7 @@ class MantisAP {
     }
 
     /**
-     * @return string
+     * @return string Gibt die URL zurück.
      */
     public function getUrl()
     {
@@ -38,7 +52,7 @@ class MantisAP {
     }
 
     /**
-     * @return MantisAP
+     * @return MantisAP Gibt die MantisAP Instanz zurück.
      */
     public static function getInstace()
     {
