@@ -141,10 +141,10 @@ class MantisRequest {
             switch ($this->method) {
                 case "POST":
                 case "GET";
-                    return $response->getBody()->getContents();
-                case "DELETE":
                 case "PATCH":
                     return $response->getBody()->getContents();
+                case "DELETE":
+                    return true;
                 default:
                     return false;
             }
