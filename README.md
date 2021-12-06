@@ -13,9 +13,10 @@ Folgende Funktionen stehen zur Verfügung:
 
 ## **Installation**
 
+```
 composer require Cevra2010/MantisAp
 composer dump-autoload
-
+```
 ## **Beispiele**
 
 #### Konfiguration vornehmen:
