@@ -30,7 +30,7 @@ $mantisAP = new MantisAP('URL','TOKEN');
 
 ---
 
-####Alle Projekte abrufen
+#### Alle Projekte abrufen
 
 ```
 use MantisAP\Objects\MantisProject;
@@ -38,14 +38,14 @@ $projects = MantisProject::all();
 ```
 
 
-####Ein bestimmtes Projekt abrufen
+#### Ein bestimmtes Projekt abrufen
 
 ```
 use MantisAP\Objects\MantisProject;
 $project = MantisProject::find(2);
 ```
 
-####Ein Projekt ändern und speichern
+#### Ein Projekt ändern und speichern
 ```
 use MantisAP\Objects\MantisProject;
 $project->name = "Test-Projekt";
