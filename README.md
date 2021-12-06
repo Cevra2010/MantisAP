@@ -51,3 +51,10 @@ use MantisAP\Objects\MantisProject;
 $project->name = "Test-Projekt";
 $project->save();
 ```
+
+#### Einen bestimmten Fehler abrufen
+
+```
+use MantisAP\Objects\MantisIssue;
+$issue = MantisIssue::find(72);
+```
