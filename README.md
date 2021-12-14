@@ -59,3 +59,18 @@ $project->save();
 use MantisAP\Objects\MantisIssue;
 $issue = MantisIssue::find(72);
 ```
+
+
+#### ... weiter Methoden
+
+```
+use MantisAP\Objects\MantisProject;
+
+$projekt = MantisProject::find(10);
+
+$project->hasParentProject();
+$project->hasSubProjects();
+$project->getSubProjects();
+$project->getParentProjects();
+
+``` 
