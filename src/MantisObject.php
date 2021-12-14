@@ -45,7 +45,7 @@ abstract class MantisObject {
      * Instanziiert ein neues MantisObjekt und ruft die findById Methode auf.
      *
      * @param integer $id
-     * @return $this
+     * @return $this|bool
      */
     public static function find(int $id)
     {
@@ -57,6 +57,7 @@ abstract class MantisObject {
         catch(ObjectNotFoundException $objectNotFoundException) {
             $objectNotFoundException->exit();
         }
+        return false;
     }
 
     /**
@@ -108,10 +109,15 @@ abstract class MantisObject {
      *  Wird das Objekt gefunden, wird die aktuelle Instanz mit den gefüllt und zurückgegeben.
      *
      * @param integer $objectId
-     * @return $this|null
+     * @return $this|MantisObject|null
      * @throws Exception
      */
     protected function findById(int $objectId) {
+
+        // Prüfen ob Objekt im Cache vorhaden ist
+        if(MantisCache::exist($this,$objectId)) {
+            return MantisCache::get($this->objectName,$objectId);
+        }
 
         // Mantis REST-Api request erzeugen und ausführen
         $request = new MantisRequest();
@@ -139,6 +145,8 @@ abstract class MantisObject {
         // Instanz zustand setzen
         $this->dirty = false;
         $this->stored = true;
+
+        MantisCache::add($this);
 
         return $this;
     }
@@ -225,6 +233,12 @@ abstract class MantisObject {
      * @return array|false|null
      */
     protected function getAll() {
+
+        // Prüfen ob die All-Collection bereits im Cache vorhaden ist.
+        if(MantisCache::allExists($this->objectName)) {
+            return MantisCache::all($this->objectName);
+        }
+
         $calledClass = get_called_class();
         $mantisRequest = new MantisRequest();
         $mantisRequest->setMethodGet()->setObjectName($this->objectName);
@@ -241,6 +255,8 @@ abstract class MantisObject {
                         $object->fillByApi($project);
                         $objectsCollection[] = $object;
                     }
+
+                    MantisCache::registerAllResponse($this->objectName,$objectsCollection);
 
                     return $objectsCollection;
                 }
@@ -287,5 +303,14 @@ abstract class MantisObject {
         $calledClass = get_called_class();
         $mantisObject = new $calledClass();
         return $mantisObject->getAll();
+    }
+
+    /**
+     * Gibt den Namen der Objektinstanz zurück.
+     *
+     * @return string|null
+     */
+    public function getObjectName() {
+        return ($this->objectName ?? null);
     }
 }

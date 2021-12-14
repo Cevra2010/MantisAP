@@ -29,6 +29,7 @@ class MantisProject extends MantisObject {
 
     public function hasParentProject() {
         $projects = MantisProject::all();
+
         foreach($projects as $project) {
             if($project->hasSubProjects()) {
                 foreach($project->getSubProjects() as $subProject) {
@@ -38,6 +39,7 @@ class MantisProject extends MantisObject {
                 }
             }
         }
+
         return false;
     }
 }
