@@ -1,5 +1,5 @@
 {
-    "name": "cevra2012/mantisap",
+    "name": "cevra2010/mantisap",
     "description": "An PHP Accesspoint for the MantisBT REST API",
     "type": "library",
     "require": {
